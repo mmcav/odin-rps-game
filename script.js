@@ -1,34 +1,56 @@
-gameStart();
-
-function gameStart() {
-    let playerScore = 0;
-    let computerScore = 0;
-    const playerChoices = document.querySelectorAll('button');
-    playerChoices.forEach((playerChoice) => {
-        playerChoice.addEventListener('click', () => {
+let playerScore = 0;
+let computerScore = 0;
+const playerChoices = document.querySelectorAll('button:not(#reset)');
+playerChoices.forEach((playerChoice) => {
+    playerChoice.addEventListener('click', () => {
+        if (playerScore < 5 && computerScore < 5) {
             [playerScore, computerScore] = game(playerChoice.value, playerScore, computerScore);
-        });
+        }
     });
-}
+});
+const resetGame = document.querySelector('button#reset');
+resetGame.addEventListener('click', () => {
+    playerScore = 0;
+    computerScore = 0;
+    const resultContainer = document.querySelector('#results');
+    while (resultContainer.firstChild) {
+        resultContainer.removeChild(resultContainer.firstChild);
+    }
+});
 
 function game(playerSelection, playerScore, computerScore) {
     const computerSelection = getComputerChoice();
+    const resultComputer = document.createElement('p');
+    resultComputer.textContent = `Computer picked ${computerSelection}...`;
     const resultCode = playRound(playerSelection, computerSelection); 
-    let resultPhrase;
+    const resultFirstLine = document.createElement('p');
     if (resultCode === 1) {
-        resultPhrase = `Tie! Both picked ${playerSelection}.`;
+        resultFirstLine.textContent = `Tie! Both picked ${playerSelection}.`;
     } else if (resultCode === 2) {
-        resultPhrase = `You win! ${playerSelection[0].toUpperCase() + playerSelection.slice(1)} beats ${computerSelection}.`;
+        resultFirstLine.textContent = `You win! ${playerSelection[0].toUpperCase() + playerSelection.slice(1)} beats ${computerSelection}.`;
         playerScore++;
     } else if (resultCode === 3) {
-        resultPhrase = `You lose! ${computerSelection[0].toUpperCase() + computerSelection.slice(1)} beats ${playerSelection}.`;
+        resultFirstLine.textContent = `You lose! ${computerSelection[0].toUpperCase() + computerSelection.slice(1)} beats ${playerSelection}.`;
         computerScore++;
     }
-    resultPhrase += `\nCurrent score: ${playerScore} x ${computerScore}`
+    const resultSecondLine = document.createElement('p');
+    resultSecondLine.textContent = `Current score: ${playerScore} x ${computerScore}`;
     const resultContainer = document.querySelector('#results');
-    const result = document.createElement('p');
-    result.textContent = resultPhrase;
-    resultContainer.appendChild(result);
+    while (resultContainer.firstChild) {
+        resultContainer.removeChild(resultContainer.firstChild);
+    }
+    resultContainer.appendChild(resultComputer);
+    resultContainer.appendChild(resultFirstLine);
+    resultContainer.appendChild(resultSecondLine);
+    if (playerScore > 4) {
+        const resultEnd = document.createElement('p');
+        resultEnd.textContent = "You won the game!";
+        resultContainer.appendChild(resultEnd);
+    } else if (computerScore > 4) {
+        const resultEnd = document.createElement('p');
+        resultEnd.textContent = "You lost the game!";
+        resultContainer.appendChild(resultEnd);
+    }
     return [playerScore, computerScore];
 }
 
