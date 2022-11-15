@@ -1,0 +1,18 @@
+body {
+    background-color: beige;
+    font-family: 'Courier New', Courier, monospace;
+    text-align: center;
+}
+
+button {
+    background-color: rgb(134, 219, 255);
+    font-weight: bold;
+    height: 32px;
+    margin-bottom: 16px;
+    width: 128px;
+}
+
+button#reset {
+    background-color: lightcoral;
+    margin-top: 16px;
+}
